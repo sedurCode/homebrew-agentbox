@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4   # TODO: pin to SHA
+      - name: Use this checkout as the tap
+        run: |
+          taps="$(brew --repository)/Library/Taps/sedurcode"
+          mkdir -p "$taps"
+          rm -rf "$taps/homebrew-agentbox"
+          ln -s "$GITHUB_WORKSPACE" "$taps/homebrew-agentbox"
+          brew trust --formula sedurcode/agentbox/agentbox
+      - name: Install
+        run: brew install --build-from-source sedurcode/agentbox/agentbox
+      - name: Test
+        run: brew test sedurcode/agentbox/agentbox
+      - name: Audit
+        run: brew audit --strict --online sedurcode/agentbox/agentbox
