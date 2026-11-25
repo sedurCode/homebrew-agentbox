@@ -1,8 +1,8 @@
 class Agentbox < Formula
   desc "Profiles, scoped credentials and host tools for AI agents in Docker Sandboxes"
   homepage "https://github.com/sedurCode/agentbox"
-  url "https://github.com/sedurCode/agentbox/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "cc4d63540578ec0e74a4dc9933498b5f83aa6bb2d2b90c7d106ad749acc190d5"
+  url "https://github.com/sedurCode/agentbox/archive/refs/tags/v0.1.2.tar.gz"
+  sha256 "cdcedd5ace9d31674a83cc64b481acccb8e5467581b06baf329b2998b02f18ca"
   license "AGPL-3.0-only"
 
   livecheck do
