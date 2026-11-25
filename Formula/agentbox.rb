@@ -4,6 +4,7 @@ class Agentbox < Formula
   url "https://github.com/sedurCode/agentbox/archive/refs/tags/v0.1.0.tar.gz"
   sha256 "befed7973df2495715370e8d1b96a1d00426de8f17759af20146686b8474fc6c"
   license "AGPL-3.0-only"
+  revision 1
 
   livecheck do
     url :stable
@@ -17,9 +18,12 @@ class Agentbox < Formula
     (libexec/"bin").install "bin/agentbox" => "agentbox.py"
     libexec.install "share"
     chmod 0755, libexec/"share/hosttool"
-    # always brew's Python, by its opt path, whatever is first on PATH
+    # Started by a GUI app (Rex, an IDE), PATH may be just /usr/bin:/bin:/usr/sbin:/sbin, without sbx:
+    # add Homebrew's bin after whatever the caller has. Then always brew's Python, by its opt path.
     (bin/"agentbox").write <<~SH
       #!/bin/sh
+      case ":$PATH:" in *":#{HOMEBREW_PREFIX}/bin:"*) ;; *) PATH="$PATH:#{HOMEBREW_PREFIX}/bin" ;; esac
+      export PATH
       exec "#{formula_opt_bin("python@3.15")}/python3.15" "#{opt_libexec}/bin/agentbox.py" "$@"
     SH
     chmod 0755, bin/"agentbox"
@@ -37,5 +41,7 @@ class Agentbox < Formula
 
   test do
     assert_match "agentbox #{version}", shell_output("#{bin}/agentbox --version")
+    # a GUI app's minimal PATH gets Homebrew's bin (where sbx is) added
+    assert_match ":#{HOMEBREW_PREFIX}/bin\"", (bin/"agentbox").read
   end
 end
